@@ -1,11 +1,7 @@
 const Product = require("../models/productModel");
-
-// Middleware custom error handling bar bar try catch na likna pade isliye banaya hai
 const AsyncError = require("../middleware/asyncError");
-
-// Middleware custom error handling banana utils me class bana kar costome error ayega
-
 const ErrorHandler = require("../utils/errorHandling");
+const ApiFeatures = require("../utils/apiFeachers"); // yaha add karna hai
 
 // ✅ Create Product (with multiple images)
 const createProduct = AsyncError(async (req, res, next) => {
@@ -38,10 +34,23 @@ const createProduct = AsyncError(async (req, res, next) => {
   });
 });
 
-// ✅ Get All Products
-const getProducts = AsyncError(async (req, res, next) => {
-  const products = await Product.find();
-  res.status(200).json({ success: true, products });
+// ✅ Get All Products (with Search, Filter, Pagination)
+const getAllProducts = AsyncError(async (req, res, next) => {
+  const resultPerPage = 10;
+  const productsCount = await Product.countDocuments();
+
+  const apiFeature = new ApiFeatures(Product.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage);
+
+  const products = await apiFeature.query;
+
+  res.status(200).json({
+    success: true,
+    products,
+    productsCount,
+  });
 });
 
 // ✅ Get Single Product by ID
@@ -90,7 +99,7 @@ const deleteProduct = AsyncError(async (req, res, next) => {
 
 module.exports = {
   createProduct,
-  getProducts,
+  getAllProducts, // 👈 simple getProducts ko replace karke ye add karna hai
   getProductById,
   updateProduct,
   deleteProduct,
