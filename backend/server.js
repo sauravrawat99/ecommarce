@@ -5,6 +5,7 @@ const errorMiddleware = require("./middleware/error");
 
 // Routes
 const Products = require("./routes/productsRoutes");
+const User = require("./routes/userRoutes");
 
 // Load env
 dotenv.config({ path: "backend/.env" });
@@ -14,9 +15,11 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/v1", Products);
+app.use("/api/v1", User);
 
 // Error Handler (always last middleware)
 app.use(errorMiddleware);

@@ -1,5 +1,10 @@
-const asyncError = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
+const asyncError = (theFunc) => {
+  return (req, res, next) => {
+    Promise.resolve(theFunc(req, res, next)).catch((err) => {
+      console.error("Caught in asyncError:", err);
+      next(err);
+    });
+  };
 };
 
 module.exports = asyncError;
