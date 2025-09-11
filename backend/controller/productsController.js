@@ -129,6 +129,139 @@ const deleteProduct = AsyncError(async (req, res, next) => {
   res.status(200).json({ success: true, message: "Product deleted" });
 });
 
+const createProductReview = AsyncError(async (req, res, next) => {
+  const { rating, comment, productId } = req.body || {};
+
+  if (!rating || !comment || !productId) {
+    return next(
+      new ErrorHandler("Rating, comment, and productId are required", 400)
+    );
+  }
+
+  // ✅ validate productId
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return next(new ErrorHandler("Invalid product ID format", 400));
+  }
+
+  // ✅ check if product exists
+  const product = await Product.findById(productId);
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  // ✅ check if user already reviewed
+  const existingReview = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id.toString()
+  );
+
+  if (existingReview) {
+    // update review
+    existingReview.rating = rating;
+    existingReview.comment = comment;
+  } else {
+    // add new review
+    const review = {
+      user: req.user._id,
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+    };
+    product.reviews.push(review);
+    product.numOfReviews = product.reviews.length;
+  }
+
+  // ✅ recalculate average rating
+  product.ratings =
+    product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+    product.reviews.length;
+
+  await product.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    message: existingReview
+      ? "Review updated successfully"
+      : "Review added successfully",
+  });
+});
+
+const getProductReviews = AsyncError(async (req, res, next) => {
+  const { id } = req.params;
+
+  // ✅ check if ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ErrorHandler("Invalid product ID format", 400));
+  }
+
+  const product = await Product.findById(id);
+
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    ratings: product.ratings,
+    count: product.reviews.length,
+    reviews: product.reviews,
+    message: product.reviews.length === 0 ? "No reviews yet" : undefined,
+  });
+});
+
+const deleteReview = AsyncError(async (req, res, next) => {
+  const { productId, reviewId } = req.query;
+
+  // 1. Validate productId
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return next(new ErrorHandler("Invalid product ID format", 400));
+  }
+
+  const product = await Product.findById(productId);
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
+
+  // 2. Filter reviews
+  const review = product.reviews.find((rev) => rev._id.toString() === reviewId);
+
+  console.log(
+    "All review IDs:",
+    product.reviews.map((r) => r._id.toString())
+  );
+  console.log("Review ID from query:", reviewId);
+  console.log("Matched review:", review);
+  if (!review) {
+    return next(new ErrorHandler("Review not found", 404));
+  }
+
+  // ✅ Normal user sirf apna hi review delete kar sake
+  if (
+    req.user.role !== "admin" &&
+    review.user.toString() !== req.user._id.toString()
+  ) {
+    return next(new ErrorHandler("Not authorized to delete this review", 403));
+  }
+
+  product.reviews = product.reviews.filter(
+    (rev) => rev._id.toString() !== reviewId
+  );
+
+  product.numOfReviews = product.reviews.length;
+
+  product.ratings =
+    product.reviews.length > 0
+      ? product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        product.reviews.length
+      : 0;
+
+  await product.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    message: "Review deleted successfully",
+  });
+});
+
 module.exports = {
   createProduct,
   getAllProducts, // 👈 simple getProducts ko replace karke ye add karna hai
@@ -137,4 +270,7 @@ module.exports = {
   deleteProduct,
   getMyProducts,
   getAdminProducts,
+  createProductReview,
+  getProductReviews,
+  deleteReview,
 };

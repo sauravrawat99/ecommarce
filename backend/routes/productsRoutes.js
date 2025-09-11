@@ -11,8 +11,12 @@ const {
   deleteProduct,
   getMyProducts,
   getAdminProducts,
+  createProductReview,
+  getProductReviews,
+  deleteReview, 
 } = require("../controller/productsController");
 
+// ✅ Product CRUD
 router.post(
   "/products",
   authentication,
@@ -49,4 +53,10 @@ router.get(
   authrole("admin"),
   getAdminProducts
 );
+
+// ✅ Reviews
+router.post("/review", authentication, createProductReview); // add/update
+router.get("/reviews/:id", getProductReviews); // get reviews
+router.delete("/review", authentication, deleteReview); // delete review
+
 module.exports = router;
