@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const dbConnect = require("./db");
 const errorMiddleware = require("./middleware/error");
 const cookieParser = require("cookie-parser"); // ✅ ye missing hai
+const orderRoutes = require("./routes/orderRoutes");
+
 
 
 // Routes
@@ -23,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1", Products);
 app.use("/api/v1", User);
+app.use("/api/v1", orderRoutes);
 
 // Error Handler (always last middleware)
 app.use(errorMiddleware);
