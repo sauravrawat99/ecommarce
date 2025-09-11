@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const dbConnect = require("./db");
 const errorMiddleware = require("./middleware/error");
+const cookieParser = require("cookie-parser"); // ✅ ye missing hai
+
 
 // Routes
 const Products = require("./routes/productsRoutes");
@@ -15,6 +17,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+app.use(cookieParser()); // ✅ add cookie parser before routes
 app.use(express.urlencoded({ extended: true }));
 
 // Routes

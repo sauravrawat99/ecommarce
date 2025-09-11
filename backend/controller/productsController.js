@@ -2,8 +2,10 @@ const Product = require("../models/productModel");
 const AsyncError = require("../middleware/asyncError");
 const ErrorHandler = require("../utils/errorHandling");
 const ApiFeatures = require("../utils/apiFeachers"); // yaha add karna hai
+const mongoose = require("mongoose");
 
 // ✅ Create Product (with multiple images)
+// ✅ Create Product (user/admin dono bana sakte hain, auth required)
 const createProduct = AsyncError(async (req, res, next) => {
   const { name, price, description, category, brand, stock } = req.body;
 
@@ -23,6 +25,7 @@ const createProduct = AsyncError(async (req, res, next) => {
     brand,
     stock,
     images,
+    user: req.user._id, // ✅ product create karne wale ka user id
   });
 
   await product.save();
@@ -31,6 +34,28 @@ const createProduct = AsyncError(async (req, res, next) => {
     success: true,
     message: "Product created successfully",
     product,
+  });
+});
+
+// ✅ User → Get Own Products
+const getMyProducts = AsyncError(async (req, res, next) => {
+  const products = await Product.find({ user: req.user._id });
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    products,
+  });
+});
+
+// ✅ Admin → Get All Products with user details
+const getAdminProducts = AsyncError(async (req, res, next) => {
+  const products = await Product.find().populate("user", "name email role");
+
+  res.status(200).json({
+    success: true,
+    count: products.length,
+    products,
   });
 });
 
@@ -55,7 +80,14 @@ const getAllProducts = AsyncError(async (req, res, next) => {
 
 // ✅ Get Single Product by ID
 const getProductById = AsyncError(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const { id } = req.params;
+
+  // ✅ check if ID is valid
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(new ErrorHandler("Invalid product ID format", 400));
+  }
+
+  const product = await Product.findById(id);
 
   if (!product) {
     return next(new ErrorHandler("Product not found", 404));
@@ -103,4 +135,6 @@ module.exports = {
   getProductById,
   updateProduct,
   deleteProduct,
+  getMyProducts,
+  getAdminProducts,
 };
