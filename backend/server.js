@@ -4,8 +4,7 @@ const dbConnect = require("./db");
 const errorMiddleware = require("./middleware/error");
 const cookieParser = require("cookie-parser"); // ✅ ye missing hai
 const orderRoutes = require("./routes/orderRoutes");
-
-
+const cors = require("cors");  
 
 // Routes
 const Products = require("./routes/productsRoutes");
@@ -15,6 +14,14 @@ const User = require("./routes/userRoutes");
 dotenv.config({ path: "backend/.env" });
 
 const app = express();
+
+// ✅ CORS middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173", // tumhara frontend URL
+    credentials: true, // cookies/jwt ke liye zaroori
+  })
+);
 
 // Middleware
 app.use(express.json());

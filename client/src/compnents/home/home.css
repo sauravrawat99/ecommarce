@@ -1,0 +1,173 @@
+/* Banner */
+.banner {
+  background: linear-gradient(to right, #635dc0, #3027ae);
+  background-size: cover;
+  height: 100vmin;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+.banner > h1 {
+  margin: 5vmax;
+  font: 600 2.5vmax "Roboto";
+}
+.banner > p {
+  font: 300 1.4vmax "Lucida Sans";
+}
+.banner > a > button {
+  margin-bottom: 5vmax;
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid white;
+  border-radius: 0;
+  padding: 1vmax;
+  transition: all 0.5s ease;
+  width: 9vmax;
+  font: 500 1vmax "Roboto";
+}
+
+.banner > a > button:hover {
+  background-color: rgba(255, 255, 255, 0);
+  color: white;
+}
+.banner::after {
+  content: "";
+  width: 100vw;
+  height: 100vmin;
+  background-color: #ffffff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: polygon(100% 68%, 0 100%, 100% 100%);
+  max-width: 100%;
+}
+
+/* Home Heading */
+.homeHeading {
+  text-align: center;
+  font-family: Roboto;
+  font-size: 1.4vmax;
+  border-bottom: 1px solid rgba(21, 21, 21, 0.5);
+  width: 20vmax;
+  padding: 1vmax;
+  margin: 5vmax auto;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Product Container */
+#container {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Product Card */
+.productCard {
+  width: 18vmax;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: rgb(48, 48, 48);
+  margin: 2vmax;
+  padding: 1vmax;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+.productCard > img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  margin-bottom: 1vmax;
+  border-radius: 8px;
+}
+.productCard > p {
+  font-size: 1.2vmax;
+  font-weight: 600;
+  margin: 0.5vmax 0;
+  text-align: center;
+}
+.productCard > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5vmax 0;
+  font-size: 1vmax;
+  color: #555;
+}
+.productCardSpan {
+  margin-left: 0.5vmax;
+  font-size: 0.9vmax;
+  color: #777;
+}
+.productCard > span {
+  text-align: center;
+  font-size: 1.1vmax;
+  font-weight: bold;
+  color: #3027ae;
+  margin-top: 0.5vmax;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .banner > h1 {
+    font-size: 4vmax;
+  }
+  .banner > p {
+    font-size: 2vmax;
+  }
+  .banner > a > button {
+    width: 20vmax;
+    font-size: 1.5vmax;
+  }
+  .homeHeading {
+    width: 40vmax;
+    font-size: 2vmax;
+  }
+  .productCard {
+    width: 40vmax;
+    margin: 3vmax 2vmax;
+  }
+}
+
+@media (max-width: 768px) {
+  .banner {
+    height: 70vmin; /* thoda kam kiya taaki scroll kam ho */
+    padding: 2vmax 1vmax; /* thoda padding add */
+  }
+  .banner > h1 {
+    font-size: 5vmax;
+    margin: 2vmax 0;
+  }
+  .banner > p {
+    font-size: 2.5vmax;
+    margin: 1vmax 0;
+  }
+  .banner > a > button {
+    width: 60%; /* mobile me button zyada wide ho */
+    font-size: 2vmax;
+    padding: 1.5vmax 0;
+  }
+  .homeHeading {
+    width: 80%; /* mobile me heading full width ke kareeb */
+    font-size: 2.5vmax;
+    margin: 3vmax auto;
+  }
+  .productCard {
+    width: 90%; /* product card full width ke kareeb */
+    margin: 2vmax auto;
+  }
+}
