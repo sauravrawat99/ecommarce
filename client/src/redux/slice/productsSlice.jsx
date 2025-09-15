@@ -1,20 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { toast } from "react-toastify";
+import axiosInstance from "../../Api/axios.config"; // ✅ dhyaan: Api ka folder name lowercase rakho
 
-// API se products fetch karne wala thunk
+// API call
 export const fetchProducts = createAsyncThunk(
   "products/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/v1/products");
+      // ✅ ab baseURL use hoga
+      const { data } = await axiosInstance.get("/products");
       return data.products;
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(error.response?.data?.message || "Server Error");
     }
   }
 );
 
-const productSlice = createSlice({
+const productsSlice = createSlice({
   name: "products",
   initialState: {
     loading: false,
@@ -30,12 +32,14 @@ const productSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload;
+        toast.success("✅ Products Loaded");
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        toast.error(`❌ ${action.payload}`);
       });
   },
 });
 
-export default productSlice.reducer;
+export default productsSlice.reducer;

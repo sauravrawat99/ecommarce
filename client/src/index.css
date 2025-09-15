@@ -1,4 +1,13 @@
-* {
-  margin: 0;
-  scroll-behavior: smooth;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* short class for links */
+/* index.css */
+.lh {
+  @apply transition duration-300 hover:scale-105 hover:-translate-y-1 active:text-lime-400;
+}
+
+body {
+  @apply bg-black text-white;
 }

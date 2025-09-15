@@ -1,29 +1,25 @@
-import React, { useEffect } from "react";
-import Header from "./compnents/layout/header/Header";
-import Footer from "./compnents/layout/footer/footer";
+import React from "react";
+import Navbar from "./compnents/layout/navbar";
+import Footer from "./compnents/layout/footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import WebFont from "webfontloader";
-import Home from "./compnents/home/home";
+// import Home from "./pages/home/home";
+// import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css"; // ye jaruri hai
 
 const App = () => {
-  useEffect(() => {
-    WebFont.load({
-      google: {
-        families: ["Roboto", "Droid Sans", "Chilanka"], // thoda spelling fix kiya
-      },
-    });
-  }, []);
-
   return (
     <BrowserRouter>
-      <Header />
+      <Navbar />
 
-      {/* Routes wrapper add kiya */}
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* // <Route path="/" element={<Home />} /> */}
+        {/* <Route path="/product/:id" element={<ProductDetails />} /> */}
       </Routes>
 
       <Footer />
+
+      {/* ToastContainer ko yaha rakho */}
+      {/* <ToastContainer position="top-right" autoClose={500} /> */}
     </BrowserRouter>
   );
 };
