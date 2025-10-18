@@ -1,18 +1,19 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-slate-800 text-white border-t-2 border-black ">
+    <footer className="w-full bg-white text-black border-2 border-black  ">
       <div className="flex flex-col md:flex-row">
         {/* Right Side */}
-        <div className="w-full md:w-[30%] flex flex-col justify-between p-6 bg-slate-900">
+        <div className="w-full md:w-[30%] flex flex-col text-white justify-between p-6 bg-slate-900">
           {/* Brand Info */}
           <div className="mb-6">
-            <a href="/">
+            <Link to="/">
               <h1 className="text-2xl font-bold mb-2 tracking-wider lh">
                 T SHOP
               </h1>
-            </a>
+            </Link>
             <a
               href="mailto:info@myside"
               className="block hover:text-lime-400 lh"
@@ -40,26 +41,26 @@ const Footer = () => {
         </div>
 
         {/* Left Side */}
-        <div className="w-full md:w-[70%] flex flex-col justify-between bg-slate-800">
+        <div className="w-full md:w-[70%] flex flex-col justify-between bg-white">
           {/* Links */}
           <div className="flex flex-col md:flex-row justify-evenly py-8 px-4 gap-8">
             <div>
               <h2 className="font-bold text-lg pb-4">SHOP</h2>
               <ul className="space-y-2">
                 <li className="lh">
-                  <a href="" className="hover:text-lime-400">
+                  <Link to="/new" className="hover:text-lime-400">
                     New
-                  </a>
+                  </Link>
                 </li>
                 <li className="lh">
-                  <a href="" className="hover:text-lime-400">
+                  <Link to="/men" className="hover:text-lime-400">
                     Men
-                  </a>
+                  </Link>
                 </li>
                 <li className="lh">
-                  <a href="" className="hover:text-lime-400">
+                  <Link to="/women" className="hover:text-lime-400">
                     Women
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -106,7 +107,7 @@ const Footer = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="text-center py-4 border-t border-gray-600 text-sm">
+          <div className="text-center py-4 border-t-2 border-black text-sm">
             © 2035 by <span className="font-semibold">T Shop</span>. Powered and
             secured by Wix
           </div>

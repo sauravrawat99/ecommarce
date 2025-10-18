@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../Api/axios.config";
 import { toast } from "react-toastify";
+import axiosInstance from "../../Api/axios.config";
 
-// ✅ Single product fetch
-export const fetchProduct = createAsyncThunk(
-  "product/fetchOne",
+// API call to fetch single product by ID
+export const fetchSingleProduct = createAsyncThunk(
+  "product/fetchSingle",
   async (id, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.get(`/products/${id}`);
@@ -15,26 +15,25 @@ export const fetchProduct = createAsyncThunk(
   }
 );
 
-const productSlice = createSlice({
-  name: "product",
+const productDetailSlice = createSlice({
+  name: "productDetail",
   initialState: {
-    loading: false,
     product: {},
+    loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProduct.pending, (state) => {
+      .addCase(fetchSingleProduct.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(fetchProduct.fulfilled, (state, action) => {
+      .addCase(fetchSingleProduct.fulfilled, (state, action) => {
         state.loading = false;
         state.product = action.payload;
-        toast.success("✅ Product Loaded");
+        toast.success(" ✅ Product Loaded");
       })
-      .addCase(fetchProduct.rejected, (state, action) => {
+      .addCase(fetchSingleProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         toast.error(`❌ ${action.payload}`);
@@ -42,4 +41,4 @@ const productSlice = createSlice({
   },
 });
 
-export default productSlice.reducer;
+export default productDetailSlice.reducer;

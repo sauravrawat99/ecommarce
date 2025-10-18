@@ -60,24 +60,61 @@ const getAdminProducts = AsyncError(async (req, res, next) => {
 });
 
 // ✅ Get All Products (with Search, Filter, Pagination)
-const getAllProducts = AsyncError(async (req, res, next) => {
-  const resultPerPage = 10;
-  const productsCount = await Product.countDocuments();
+// Backend: getAllProducts
+// Backend: getAllProducts (example with MongoDB)
+const getAllProducts = async (req, res) => {
+  const { page = 1, limit = 8, keyword, category, price, sort } = req.query;
+  const query = {};
+  console.log("Received query params:", req.query);
 
-  const apiFeature = new ApiFeatures(Product.find(), req.query)
-    .search()
-    .filter()
-    .pagination(resultPerPage);
+  if (keyword) query.name = { $regex: keyword, $options: "i" };
+  if (category) {
+    query.category = { $regex: new RegExp(`^${category.toLowerCase()}$`, "i") }; // Case-insensitive
+    console.log("Applying category filter:", query.category);
+  }
+  if (price) {
+    query.price = {};
+    if (price.gte) query.price.$gte = Number(price.gte);
+    if (price.lte) query.price.$lte = Number(price.lte);
+  }
 
-  const products = await apiFeature.query;
+  const sortOptions = {};
+  if (sort) {
+    if (sort === "price" || sort === "-price")
+      sortOptions.price = sort === "price" ? 1 : -1;
+    else if (sort === "name" || sort === "-name")
+      sortOptions.name = sort === "name" ? 1 : -1;
+  }
 
-  res.status(200).json({
-    success: true,
-    products,
-    productsCount,
-  });
-});
+  try {
+    const products = await Product.find(query)
+      .sort(sortOptions)
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const productsCount = await Product.countDocuments(query);
+    const totalPages = Math.ceil(productsCount / limit);
 
+    console.log(
+      "Query executed:",
+      query,
+      "Sort:",
+      sortOptions,
+      "Products count:",
+      products.length
+    );
+    res.status(200).json({
+      success: true,
+      products,
+      productsCount,
+      resultPerPage: Number(limit),
+      currentPage: Number(page),
+      totalPages,
+    });
+  } catch (error) {
+    console.error("Fetch error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 // ✅ Get Single Product by ID
 const getProductById = AsyncError(async (req, res, next) => {
   const { id } = req.params;

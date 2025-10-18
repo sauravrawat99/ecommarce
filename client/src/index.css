@@ -9,5 +9,35 @@
 }
 
 body {
-  @apply bg-black text-white;
+  @apply bg-white text-black;
 }
+
+.image-card { position: relative; overflow: hidden; border-radius: 0.5rem; }
+.image-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; display: block; }
+.image-card:hover img { transform: scale(1.05); }
+
+/* Overlay ignores clicks so Link works */
+.image-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.4s ease;
+  pointer-events: none; /* critical */
+}
+
+/* Hover darken remains visual only */
+.image-card:hover::after { background: rgba(0, 0, 0, 0.4); }
+
+/* Text above overlay */
+.image-card-text {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  color: white; font-size: 1.2rem; font-weight: bold;
+  padding: 6px 10px; border-radius: 6px;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.4s ease;
+  z-index: 1; /* ensure above ::after */
+}
+
+.image-card:hover .image-card-text { opacity: 1; transform: translateY(0); }

@@ -4,7 +4,7 @@ const dbConnect = require("./db");
 const errorMiddleware = require("./middleware/error");
 const cookieParser = require("cookie-parser"); // ✅ ye missing hai
 const orderRoutes = require("./routes/orderRoutes");
-const cors = require("cors");  
+const cors = require("cors");
 
 // Routes
 const Products = require("./routes/productsRoutes");
@@ -25,10 +25,9 @@ app.use(
 
 // Middleware
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
-app.use(cookieParser()); // ✅ add cookie parser before routes
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
+app.use("/uploads", express.static("./uploads"));
 // Routes
 app.use("/api/v1", Products);
 app.use("/api/v1", User);
